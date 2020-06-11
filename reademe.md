@@ -5,8 +5,8 @@
 1. 克隆仓库
 
   ```shell
-  git clone https://github.com/DuYi-Edu/DuYi-Node.git
-  cd DuYi-Node
+  git clone https://github.com/DuYi-Edu/DuYi-Redis
+  cd DuYi-Redis
   ```
 
 2. 获取所有远程分支并映射到本地
