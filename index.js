@@ -1,19 +1,32 @@
 const express = require("express");
+const redis = require("redis");
+const session = require("express-session");
 
+let RedisStore = require("connect-redis")(session);
+let client = redis.createClient();
+client.select(6);
 const app = express();
-app.use(express.static("./public"));
+app.use(
+  session({
+    store: new RedisStore({ client, ttl: 10 }),
+    secret: "duyi",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
-const router = express.Router();
+app.get("/a", (req, res) => {
+  if (!req.session.a) {
+    req.session.a = 1;
+    req.session.b = 2;
+    req.session.rad = Math.random();
+  }
 
-router.get("/:id", require("./cache")({ ttl: 10 }), (req, res) => {
-  console.log(req.originalUrl, "没有使用缓存");
-  // 从数据库中取出对应id的新闻数据
-  res.send({
-    title: "新闻标题" + req.params.id,
-    content: "新闻内容" + req.params.id,
-  });
+  res.send("session已经有值了");
 });
 
-app.use("/api/news", router);
+app.get("/b", (req, res) => {
+  res.send(req.session);
+});
 
 app.listen(9527);
